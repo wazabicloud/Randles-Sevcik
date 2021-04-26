@@ -364,9 +364,6 @@ elif mode == "slice":
             smallest_scrate = df_list[i][scrate]
             smallest_curve = df_list[i]
 
-    smallest_curve = df_list[3]
-    smallest_scrate = df_list[3][scrate]
-
     #Evidenzio la curva nel grafico di destra colorandola
     ax1.scatter(smallest_curve[cathodic][pot], smallest_curve[cathodic][curr], c="red", s=2)
     ax1.scatter(smallest_curve[anodic][pot], smallest_curve[anodic][curr], c="red", s=2)
