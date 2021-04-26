@@ -391,8 +391,8 @@ elif mode == "slice":
     ax2.fill(slice_fit_df[pot], slice_fit_df["far_current"], c="blue", alpha=0.5)
     #ax2.fill(slice_fit_df[pot], slice_fit_df["total_current"], c="purple", alpha=0.5)
 
-    ax2.set_xlabel(r"E (V)$")
-    ax2.set_ylabel(r"j (A/cm$^2$)$")
+    ax2.set_xlabel(r"E (V)")
+    ax2.set_ylabel(r"j (A/cm$^2$)")
 
     #Se richiesto, tiro fuori i files
     if get_files == True:
