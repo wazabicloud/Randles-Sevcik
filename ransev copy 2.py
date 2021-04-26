@@ -143,6 +143,9 @@ for df in df_list:
 ax1.set_xlabel("E (V)")
 ax1.set_ylabel("j (A/cm$^2$)")
 
+ax1.tick_params(which="both", direction="in")
+ax2.tick_params(which="both", direction="in")
+
 #Funzione per trovare quanti picchi sono contenuti all'interno di un range di potenziale
 def peaks_in_range(max_order:float, min_order:float, E_range: tuple[float, float], df:DataFrame):
 
