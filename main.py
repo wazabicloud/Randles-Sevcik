@@ -2,6 +2,7 @@ from pandas.core.frame import DataFrame
 import AdmiralDecode, BiologicDecode
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import os
 import numpy as np
 from scipy.optimize import curve_fit
@@ -26,6 +27,10 @@ min_order = 200
 
 #Parametri per slices
 slices = 1000
+plot_cap_contrib = True
+plot_far_contrib = False
+plot_total_contrib = False
+plot_R2 = True
 
 #Nomi finali delle colonne per unificare i dataframe
 pot = "Potential (V)"
@@ -134,7 +139,16 @@ def linear(x, a, b):
     return (a*x) + b
 
 #Plot delle curve normali
-fig, (ax1, ax2) = plt.subplots(1, 2)
+
+if mode == "slice" and plot_R2 == True:
+    fig = plt.figure()
+    spec = fig.add_gridspec(2, 2, height_ratios=(2, 7))
+    
+    ax1 = fig.add_subplot(spec[:, 0])
+    ax2 = fig.add_subplot(spec[1, 1])
+    ax3 = fig.add_subplot(spec[0, 1], sharex=ax2)
+else:
+    fig, (ax1, ax2) = plt.subplots(1, 2)
 
 for df in df_list:
     ax1.scatter(df[anodic][pot], df[anodic][curr], c="black", s=1)
@@ -392,13 +406,25 @@ elif mode == "slice":
     slice_fit_df.sort_values(by=["graph_index"], ascending=True, inplace=True)
 
     #Plot dei contributi
-    ax2.fill(slice_fit_df[pot], slice_fit_df["cap_current"], c="red", alpha=0.5)
-    ax2.fill(slice_fit_df[pot], slice_fit_df["far_current"], c="blue", alpha=0.5)
-    #ax2.fill(slice_fit_df[pot], slice_fit_df["total_current"], c="purple", alpha=0.5)
+    if plot_cap_contrib == True:
+        ax2.fill(slice_fit_df[pot], slice_fit_df["cap_current"], c="red", alpha=0.5)
 
-    #Plot R^2
-    ax2.plot(slice_fit_df[slice_fit_df["branch"] == anodic][pot], slice_fit_df[slice_fit_df["branch"] == anodic]["R2"])
-    ax2.plot(slice_fit_df[slice_fit_df["branch"] == cathodic][pot], slice_fit_df[slice_fit_df["branch"] == cathodic]["R2"])
+    if plot_far_contrib == True:
+        ax2.fill(slice_fit_df[pot], slice_fit_df["far_current"], c="blue", alpha=0.5)
+
+    if plot_total_contrib == True:
+        ax2.fill(slice_fit_df[pot], slice_fit_df["total_current"], c="purple", alpha=0.5)
+
+    #Se richiesto plotto R^2
+    if plot_R2 == True:
+
+        ax3.plot(slice_fit_df[slice_fit_df["branch"] == anodic][pot], slice_fit_df[slice_fit_df["branch"] == anodic]["R2"], label="Anodic")
+        ax3.plot(slice_fit_df[slice_fit_df["branch"] == cathodic][pot], slice_fit_df[slice_fit_df["branch"] == cathodic]["R2"], label="Cathodic")
+
+        ax3.tick_params(which="both", direction="in", labelbottom=False)
+        ax3.set_ylabel(r"R$^2$")
+        ax3.set_ylim(0, 1)
+        ax3.legend(frameon=False)
 
     ax2.set_xlabel(r"E (V)")
     ax2.set_ylabel(r"j (A/cm$^2$)")
