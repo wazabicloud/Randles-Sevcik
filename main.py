@@ -316,14 +316,13 @@ elif mode == "slice":
             if max_pot > df[branch][pot].max():
                 max_pot = df[branch][pot].max()
 
-    #slice_fit è un dataframe che viene popolato con i k1, k2 e V
-    slice_fit_df = pd.DataFrame(columns=["k1", "k2", pot, "branch"])
+    #slice_fit è un dataframe che viene popolato con i risultati del fit
+    slice_fit_df = pd.DataFrame(columns=["k1", "k2", pot, "branch", "R2"])
 
     #Divido il potenziale in tanti intervalli
     slice_list = np.linspace(min_pot, max_pot, num=slices)
 
-    #Per ogni intervallo trovo i punti nelle curve più vicini
-    #e faccio il fit lineare
+    #Per ogni intervallo trovo i punti nelle curve più vicini e faccio il fit lineare
     for target_pot in slice_list:
 
         for branch in [cathodic, anodic]:
@@ -348,7 +347,13 @@ elif mode == "slice":
             k1 = popt[0]
             k2 = popt[1]
 
-            slice_fit_df = slice_fit_df.append({"k1":k1, "k2":k2, pot:target_pot, "branch":branch}, ignore_index=True)
+            #Calcolo R^2
+            residuals = y_to_fit - linear(x_to_fit, *popt)
+            ss_res = np.sum(residuals**2)
+            ss_tot = np.sum((y_to_fit - np.mean(y_to_fit))**2)
+            r_squared = 1 - (ss_res/ss_tot)
+
+            slice_fit_df = slice_fit_df.append({"k1":k1, "k2":k2, pot:target_pot, "branch":branch, "R2":r_squared}, ignore_index=True)
 
     #Trovo la curva a scan rate più lento
 
@@ -391,8 +396,12 @@ elif mode == "slice":
     ax2.fill(slice_fit_df[pot], slice_fit_df["far_current"], c="blue", alpha=0.5)
     #ax2.fill(slice_fit_df[pot], slice_fit_df["total_current"], c="purple", alpha=0.5)
 
-    ax2.set_xlabel(r"E (V)$")
-    ax2.set_ylabel(r"j (A/cm$^2$)$")
+    #Plot R^2
+    ax2.plot(slice_fit_df[slice_fit_df["branch"] == anodic][pot], slice_fit_df[slice_fit_df["branch"] == anodic]["R2"])
+    ax2.plot(slice_fit_df[slice_fit_df["branch"] == cathodic][pot], slice_fit_df[slice_fit_df["branch"] == cathodic]["R2"])
+
+    ax2.set_xlabel(r"E (V)")
+    ax2.set_ylabel(r"j (A/cm$^2$)")
 
     #Se richiesto, tiro fuori i files
     if get_files == True:
