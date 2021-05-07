@@ -15,7 +15,7 @@ from scipy.signal import argrelextrema
 #   slice:      divisione della cv in contributi capacitivi e faradici
 
 get_files = False
-mode = "slice"
+mode = "peakfit"
 
 #Area campione
 area = 2.0
@@ -30,7 +30,7 @@ slices = 1000
 plot_cap_contrib = True
 plot_far_contrib = False
 plot_total_contrib = False
-plot_R2 = True
+plot_R2 = False
 
 #Nomi finali delle colonne per unificare i dataframe
 pot = "Potential (V)"
@@ -89,6 +89,18 @@ def biologic_import(file):
 
     return last_cycle
 
+def musca_import(file):
+
+    data_pot_name = "Average Potential (V)"
+    data_curr_name = "Average Cumulative Current (A)"
+    data_time_name = "Elapsed Time (s)"
+
+    df = pd.read_excel(file, index_col=0)
+    df = df[[data_pot_name, data_curr_name, data_time_name]].copy()
+    df.rename({data_pot_name: pot, data_curr_name: curr, data_time_name: time}, axis="columns", inplace=True)
+
+    return df
+
 for file in os.listdir(file_dir):
 
     file = file_dir + "\\" + file
@@ -97,6 +109,8 @@ for file in os.listdir(file_dir):
         df_list.append(admiral_import(file))
     elif ".mpt" in file:
         df_list.append(biologic_import(file))
+    elif ".xlsx" in file:
+        df_list.append(musca_import(file))
     else:
         continue
 
