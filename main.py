@@ -26,10 +26,10 @@ max_order = 200
 min_order = 200
 
 #Parametri per slices
-slices = 25
-plot_cap_contrib = False
+slices = 200
+plot_cap_contrib = True
 plot_far_contrib = False
-plot_total_contrib = True
+plot_total_contrib = False
 plot_R2 = True
 
 #Nomi finali delle colonne per unificare i dataframe
@@ -93,7 +93,7 @@ def musca_import(file):
 
     data_pot_name = "Average Potential (V)"
     data_curr_name = "Average Cumulative Current (A)"
-    data_time_name = "Elapsed Time (s)"
+    data_time_name = "Equivalent Time (s)"
 
     df = pd.read_excel(file, index_col=0)
 
@@ -359,7 +359,7 @@ elif mode == "slice":
     #Per ogni intervallo trovo i punti nelle curve più vicini e faccio il fit lineare
     for target_pot in slice_list:
 
-        for branch in [cathodic, anodic]:
+        for branch in [anodic, cathodic]:
 
             closer_points_df = pd.DataFrame()
 
@@ -406,9 +406,12 @@ elif mode == "slice":
             smallest_scrate = df_list[i][scrate]
             smallest_curve = df_list[i]
 
+    smallest_scrate = df_list[5][scrate]
+    smallest_curve = df_list[5]
+
     #Evidenzio la curva nel grafico di destra colorandola
-    ax1.scatter(smallest_curve[cathodic][pot], smallest_curve[cathodic][curr], c="red", s=2)
-    ax1.scatter(smallest_curve[anodic][pot], smallest_curve[anodic][curr], c="red", s=2)
+    ax1.plot(smallest_curve[cathodic][pot], smallest_curve[cathodic][curr], c="red", lw=2)
+    ax1.plot(smallest_curve[anodic][pot], smallest_curve[anodic][curr], c="red", lw=2)
 
     ax2.plot(smallest_curve[cathodic][pot], smallest_curve[cathodic][curr], c="black")
     ax2.plot(smallest_curve[anodic][pot], smallest_curve[anodic][curr], c="black")
