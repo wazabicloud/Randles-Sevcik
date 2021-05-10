@@ -15,7 +15,7 @@ from scipy.signal import argrelextrema
 #   slice:      divisione della cv in contributi capacitivi e faradici
 
 get_files = False
-mode = "peakfit"
+mode = "slice"
 
 #Area campione
 area = 2.0
@@ -26,11 +26,11 @@ max_order = 200
 min_order = 200
 
 #Parametri per slices
-slices = 1000
-plot_cap_contrib = True
+slices = 25
+plot_cap_contrib = False
 plot_far_contrib = False
-plot_total_contrib = False
-plot_R2 = False
+plot_total_contrib = True
+plot_R2 = True
 
 #Nomi finali delle colonne per unificare i dataframe
 pot = "Potential (V)"
@@ -96,6 +96,7 @@ def musca_import(file):
     data_time_name = "Elapsed Time (s)"
 
     df = pd.read_excel(file, index_col=0)
+
     df = df[[data_pot_name, data_curr_name, data_time_name]].copy()
     df.rename({data_pot_name: pot, data_curr_name: curr, data_time_name: time}, axis="columns", inplace=True)
 
