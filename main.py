@@ -166,8 +166,8 @@ else:
     fig, (ax1, ax2) = plt.subplots(1, 2)
 
 for df in df_list:
-    ax1.scatter(df[anodic][pot], df[anodic][curr], c="black", s=1)
-    ax1.scatter(df[cathodic][pot], df[cathodic][curr], c="black", s=1)
+    ax1.scatter(df[anodic][pot], df[anodic][curr], c="black", s=2)
+    ax1.scatter(df[cathodic][pot], df[cathodic][curr], c="black", s=2)
 
 ax1.set_xlabel("E (V)")
 ax1.set_ylabel("j (A/cm$^2$)")
@@ -259,8 +259,13 @@ if mode == "peakfit":
 
     #Se la ricerca trova qualcosa (uno dei due num_of_peaks è > 0), raggruppo i picchi in set
     if num_of_anod_peaks > 0 or num_of_cat_peaks > 0:
-        for df in df_list:
-            anodic_peaks_in_range, cathodic_peaks_in_range = peaks_in_range(max_order, min_order, E_range, df)
+        for i in range(len(df_list)):
+            anodic_peaks_in_range, cathodic_peaks_in_range = peaks_in_range(max_order, min_order, E_range, df_list[i])
+
+            # Filtro temporaneo
+            # if i == 0:
+            #     temp_range = (-3, 2)
+            #     anodic_peaks_in_range, cathodic_peaks_in_range = peaks_in_range(max_order, min_order, temp_range, df_list[i])
 
             #Per capire quali sono i picchi più prominenti uso come criterio la corrente, mentre
             #per raggrupparli in un set uso il potenziale
@@ -278,7 +283,7 @@ if mode == "peakfit":
             else:
                 cathodic_peaks_in_range = pd.DataFrame()
 
-            df[peaks] = pd.concat([anodic_peaks_in_range, cathodic_peaks_in_range], ignore_index=True)
+            df_list[i][peaks] = pd.concat([anodic_peaks_in_range, cathodic_peaks_in_range], ignore_index=True)
             peak_num = num_of_anod_peaks + num_of_cat_peaks
 
         #Vado a prendere il primo picco in ordine da ogni curva a diverso scan rate e creo
