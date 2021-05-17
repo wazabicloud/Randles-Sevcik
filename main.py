@@ -15,10 +15,10 @@ from scipy.signal import argrelextrema
 #   slice:      divisione della cv in contributi capacitivi e faradici
 
 get_files = False
-mode = "slice"
+mode = "peakfit"
 
 #Area campione
-area = 2.0
+area = 1.0
 
 #Parametri per ricerca picchi
 E_range = (-3, 3)
@@ -153,6 +153,9 @@ def power_law(x, a, b):
 def linear(x, a, b):
     return (a*x) + b
 
+def square_root(x, a):
+    return a * np.power(x, 0.5)
+
 #Plot delle curve normali
 
 if mode == "slice" and plot_R2 == True:
@@ -214,7 +217,7 @@ def fit_and_plot(peak_set, fit_func, x_var, y_var):
 
         #Plot del fit                
         x_data_for_curve = np.linspace(x_var.min(), x_var.max(), num=50)
-        ax2.plot(x_data_for_curve, fit_func(x_data_for_curve, *popt), linestyle="dashed", label=r'i = a$\nu^b$ with a=%5.3f, b=%5.3f and R$^2$=%5.3f' % tuple(labels))
+        ax2.plot(x_data_for_curve, fit_func(x_data_for_curve, *popt), linestyle="dashed", label=r'i = a$\nu^b$ with a=%5.3f b=%5.3f and R$^2$=%5.3f' % tuple(labels))
 
     except:
         pass
