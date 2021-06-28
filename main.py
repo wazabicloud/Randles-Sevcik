@@ -8,27 +8,27 @@ import numpy as np
 from scipy.optimize import curve_fit
 from scipy.signal import argrelextrema
 
-#Opzioni
-#get_files genera i files dei dati e dei report alla fine
-#mode seleziona il tipo di analisi:
+# Opzioni
+# get_files genera i files dei dati e dei report alla fine
+# mode seleziona il tipo di analisi:
 #   peakfit:    fit dei picchi con la randles-sevcik
 #   slice:      divisione della cv in contributi capacitivi e faradici
 
 get_files = False
-mode = "peakfit"
+mode = "slice"
 
 #Area campione
 area = 1.0
 
 #Parametri per ricerca picchi
-E_range = (-3, 3)
-max_order = 200
-min_order = 200
+E_range = (0.2, 0.8)
+max_order = 300
+min_order = 300
 
 #Parametri per slices
 slices = 200
 plot_cap_contrib = True
-plot_far_contrib = False
+plot_far_contrib = True
 plot_total_contrib = False
 plot_R2 = True
 
@@ -408,9 +408,6 @@ elif mode == "slice":
         if df_list[i][scrate] < smallest_scrate or smallest_scrate == -1:
             smallest_scrate = df_list[i][scrate]
             smallest_curve = df_list[i]
-
-    smallest_scrate = df_list[5][scrate]
-    smallest_curve = df_list[5]
 
     #Evidenzio la curva nel grafico di destra colorandola
     ax1.plot(smallest_curve[cathodic][pot], smallest_curve[cathodic][curr], c="red", lw=2)
