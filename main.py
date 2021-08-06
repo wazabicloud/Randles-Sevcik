@@ -15,7 +15,7 @@ from scipy.signal import argrelextrema
 #   slice:      divisione della cv in contributi capacitivi e faradici
 
 get_files = False
-mode = "slice"
+mode = "peakfit"
 
 #Area campione
 area = 1.0
